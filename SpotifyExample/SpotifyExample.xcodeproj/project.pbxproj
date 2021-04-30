@@ -12,6 +12,8 @@
 		0D041BF6263BD80E00171CF3 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D041BF5263BD80E00171CF3 /* HomeViewController.swift */; };
 		0D041BFB263BD81100171CF3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D041BFA263BD81100171CF3 /* Assets.xcassets */; };
 		0D041BFE263BD81100171CF3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D041BFC263BD81100171CF3 /* LaunchScreen.storyboard */; };
+		0D4ED6B9263C13080018403B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4ED6B8263C13080018403B /* Extensions.swift */; };
+		0D4ED6BC263C5F5D0018403B /* AuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4ED6BB263C5F5D0018403B /* AuthResponse.swift */; };
 		0D6C606E263BDF0200A9090E /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6C606D263BDF0200A9090E /* TabBarViewController.swift */; };
 		0D6C6073263BDF2900A9090E /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6C6072263BDF2900A9090E /* SearchViewController.swift */; };
 		0D6C6076263BDF4300A9090E /* LibraryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6C6075263BDF4300A9090E /* LibraryViewController.swift */; };
@@ -39,6 +41,8 @@
 		0D041BFA263BD81100171CF3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0D041BFD263BD81100171CF3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0D041BFF263BD81100171CF3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0D4ED6B8263C13080018403B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		0D4ED6BB263C5F5D0018403B /* AuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResponse.swift; sourceTree = "<group>"; };
 		0D6C606D263BDF0200A9090E /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		0D6C6072263BDF2900A9090E /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		0D6C6075263BDF4300A9090E /* LibraryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewController.swift; sourceTree = "<group>"; };
@@ -113,6 +117,7 @@
 				0D041BF1263BD80E00171CF3 /* AppDelegate.swift */,
 				0D041BF3263BD80E00171CF3 /* SceneDelegate.swift */,
 				0D041BFA263BD81100171CF3 /* Assets.xcassets */,
+				0D4ED6B8263C13080018403B /* Extensions.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -151,6 +156,7 @@
 				0D6C609C263BE37F00A9090E /* AudioTrack.swift */,
 				0D6C609F263BE39500A9090E /* Artist.swift */,
 				0D6C60A2263BE3AA00A9090E /* UserProfile.swift */,
+				0D4ED6BB263C5F5D0018403B /* AuthResponse.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -256,11 +262,13 @@
 				0D041BF6263BD80E00171CF3 /* HomeViewController.swift in Sources */,
 				0D6C6096263BE34B00A9090E /* HapticsManager.swift in Sources */,
 				0D6C6088263BE2B100A9090E /* PlayerlistViewController.swift in Sources */,
+				0D4ED6BC263C5F5D0018403B /* AuthResponse.swift in Sources */,
 				0D6C609D263BE37F00A9090E /* AudioTrack.swift in Sources */,
 				0D6C6079263BE27A00A9090E /* AuthViewController.swift in Sources */,
 				0D6C6099263BE36900A9090E /* Playlist.swift in Sources */,
 				0D041BF2263BD80E00171CF3 /* AppDelegate.swift in Sources */,
 				0D6C60A3263BE3AA00A9090E /* UserProfile.swift in Sources */,
+				0D4ED6B9263C13080018403B /* Extensions.swift in Sources */,
 				0D6C6076263BDF4300A9090E /* LibraryViewController.swift in Sources */,
 				0D6C60A0263BE39500A9090E /* Artist.swift in Sources */,
 				0D041BF4263BD80E00171CF3 /* SceneDelegate.swift in Sources */,
