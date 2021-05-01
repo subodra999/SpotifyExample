@@ -32,7 +32,7 @@ final class NetworkManager {
                 }
                 do {
                     let model = try JSONDecoder().decode(UserProfile.self, from: data)
-                    print(model)
+                    completionHandler(.success(model))
                 } catch {
                     completionHandler(.failure(NetworkError.failedToParseData))
                 }
