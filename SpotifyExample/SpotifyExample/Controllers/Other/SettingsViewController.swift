@@ -19,6 +19,7 @@ class SettingsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Settings"
         view.backgroundColor = .systemBackground
         configureSections()
         view.addSubview(tableView)
@@ -47,7 +48,6 @@ class SettingsViewController: UIViewController {
     private func myProfileTapped() {
         let vc = ProfileViewController()
         vc.navigationItem.largeTitleDisplayMode = .never
-        vc.title = "Profile"
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -83,6 +83,5 @@ extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
         let model = sections[indexPath.section].options[indexPath.row]
         model.handler()
     }
-    
     
 }
