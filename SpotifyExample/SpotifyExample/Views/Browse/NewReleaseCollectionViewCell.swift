@@ -46,6 +46,7 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(albumNameLabel)
         contentView.addSubview(numOfTracksLabel)
         contentView.addSubview(artistNameLabel)
+        contentView.clipsToBounds = true
     }
     
     required init?(coder: NSCoder) {
@@ -102,7 +103,7 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
     
     func configure(with viewModel: NewReleasesCellViewModel) {
         artistNameLabel.text = viewModel.artistName
-        albumNameLabel.text = viewModel.artistName
+        albumNameLabel.text = viewModel.name
         numOfTracksLabel.text = "Tracks:- \(viewModel.numOfTracks ?? 0)"
         albumCoverImageView.sd_setImage(with: viewModel.artworkURL, completed: nil)
     }

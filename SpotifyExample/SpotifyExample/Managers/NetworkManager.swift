@@ -11,7 +11,7 @@ struct URLConstants {
     static let base = "https://api.spotify.com/v1"
     static let profileUrl = base + "/me"
     static let newReleasesUrl = base + "/browse/new-releases?limit=50"
-    static let featuredPlaylist = base + "/browse/featured-playlists?limit=1"
+    static let featuredPlaylist = base + "/browse/featured-playlists?limit=20"
     static let recommendedGenres = base + "/recommendations/available-genre-seeds"
     static func recommendations(seeds: String) -> String {
         return base + "/recommendations?limit=40&seed_genres=\(seeds)"
