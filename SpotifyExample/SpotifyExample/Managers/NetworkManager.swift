@@ -65,7 +65,7 @@ final class NetworkManager {
         }
     }
     
-    public func getFeaturedPlaylists(completionHandler: @escaping (Result<FeaturedPlaylistsModel, Error>) -> Void) {
+    public func getFeaturedPlaylists(completionHandler: @escaping (Result<FeaturedPlaylistsResponse, Error>) -> Void) {
         createRequest(with: URL(string: URLConstants.featuredPlaylist), type: .GET) { (baseRequest) in
             let task = URLSession.shared.dataTask(with: baseRequest) { (data, _, error) in
                 guard let data = data, error == nil else {
@@ -73,7 +73,7 @@ final class NetworkManager {
                     return
                 }
                 do {
-                    let model = try JSONDecoder().decode(FeaturedPlaylistsModel.self, from: data)
+                    let model = try JSONDecoder().decode(FeaturedPlaylistsResponse.self, from: data)
                     completionHandler(.success(model))
                 } catch {
                     completionHandler(.failure(NetworkError.failedToParseData))
