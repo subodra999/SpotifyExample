@@ -1,5 +1,5 @@
 //
-//  FeaturedPlaylistsModel.swift
+//  FeaturedPlaylistsResponse.swift
 //  SpotifyExample
 //
 //  Created by Subodra Banik on 01/05/21.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FeaturedPlaylistsModel: Codable {
+struct FeaturedPlaylistsResponse: Codable {
     let playlists: PlaylistsResponse?
 }
 
