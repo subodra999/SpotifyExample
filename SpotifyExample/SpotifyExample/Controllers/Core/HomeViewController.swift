@@ -11,6 +11,17 @@ enum BrowseSectionType {
     case newRelease(viewModels: [NewReleasesCellViewModel]) // 0
     case featuredPlaylist(viewModels: [FeaturedPlaylistCellViewModel]) // 1
     case recommendedTrack(viewModels: [RecommendedTrackCellViewModel]) // 2
+    
+    var title: String {
+        switch self {
+        case .newRelease:
+            return "New Releases Albums"
+        case .featuredPlaylist:
+            return "Featured Playlists"
+        case .recommendedTrack:
+            return "Recommended"
+        }
+    }
 }
 
 class HomeViewController: UIViewController {
@@ -57,6 +68,11 @@ class HomeViewController: UIViewController {
         collectionView.register(NewReleaseCollectionViewCell.self, forCellWithReuseIdentifier: NewReleaseCollectionViewCell.identifier)
         collectionView.register(RecommendedTrackCollectionViewCell.self, forCellWithReuseIdentifier: RecommendedTrackCollectionViewCell.identifier)
         collectionView.register(FeaturedPlaylistCollectionViewCell.self, forCellWithReuseIdentifier: FeaturedPlaylistCollectionViewCell.identifier)
+        collectionView.register(
+            TitleHeaderCollectionReusableView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: TitleHeaderCollectionReusableView.identifier
+        )
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = .systemBackground
@@ -260,8 +276,33 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         }
     }
     
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard kind == UICollectionView.elementKindSectionHeader,
+              let header = collectionView.dequeueReusableSupplementaryView(
+                ofKind: UICollectionView.elementKindSectionHeader,
+                withReuseIdentifier: TitleHeaderCollectionReusableView.identifier,
+                for: indexPath
+              ) as? TitleHeaderCollectionReusableView else {
+            return UICollectionReusableView()
+        }
+        header.configure(title: sections[indexPath.section].title)
+        return header
+    }
+    
     // Section layout helper function
     private static func createSectionLayout(section: Int) -> NSCollectionLayoutSection {
+        
+        let supplymentaryViews = [
+            NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(50)
+                ),
+                elementKind: UICollectionView.elementKindSectionHeader,
+                alignment: .top
+            )
+        ]
+        
         switch section {
         case 0:
             // Item
@@ -292,6 +333,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             // Section
             let section = NSCollectionLayoutSection(group: horizontalGroup)
             section.orthogonalScrollingBehavior = .groupPaging
+            section.boundarySupplementaryItems = supplymentaryViews
             return section
         case 1:
             // Item
@@ -322,6 +364,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             // Section
             let section = NSCollectionLayoutSection(group: horizontalGroup)
             section.orthogonalScrollingBehavior = .continuous
+            section.boundarySupplementaryItems = supplymentaryViews
             return section
         case 2:
             // Item
@@ -343,6 +386,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             )
             // Section
             let section = NSCollectionLayoutSection(group: group)
+            section.boundarySupplementaryItems = supplymentaryViews
             return section
         default:
             // Item

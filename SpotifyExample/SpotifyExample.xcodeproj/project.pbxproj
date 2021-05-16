@@ -50,6 +50,7 @@
 		0DAF480D2650FA8000F3184F /* PlaylistDetailsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAF480C2650FA8000F3184F /* PlaylistDetailsResponse.swift */; };
 		0DAF48102651069400F3184F /* PlaylistHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAF480F2651069400F3184F /* PlaylistHeaderCollectionReusableView.swift */; };
 		0DAF481326510D5600F3184F /* PlaylistHeaderViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAF481226510D5600F3184F /* PlaylistHeaderViewViewModel.swift */; };
+		0DAF4817265124D200F3184F /* TitleHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAF4816265124D200F3184F /* TitleHeaderCollectionReusableView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -97,6 +98,7 @@
 		0DAF480C2650FA8000F3184F /* PlaylistDetailsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistDetailsResponse.swift; sourceTree = "<group>"; };
 		0DAF480F2651069400F3184F /* PlaylistHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		0DAF481226510D5600F3184F /* PlaylistHeaderViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistHeaderViewViewModel.swift; sourceTree = "<group>"; };
+		0DAF4816265124D200F3184F /* TitleHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		1AF67783F17DB7D699A2BFF6 /* Pods-SpotifyExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpotifyExample.debug.xcconfig"; path = "Target Support Files/Pods-SpotifyExample/Pods-SpotifyExample.debug.xcconfig"; sourceTree = "<group>"; };
 		BAE40A51D6C3D55548273AAC /* Pods_SpotifyExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SpotifyExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCEF0B17590BBF50C8AFE233 /* Pods-SpotifyExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpotifyExample.release.xcconfig"; path = "Target Support Files/Pods-SpotifyExample/Pods-SpotifyExample.release.xcconfig"; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				0DAF480F2651069400F3184F /* PlaylistHeaderCollectionReusableView.swift */,
+				0DAF4816265124D200F3184F /* TitleHeaderCollectionReusableView.swift */,
 				0D10BEED263ECD79009EF62C /* Browse */,
 				0D041BFC263BD81100171CF3 /* LaunchScreen.storyboard */,
 			);
@@ -410,6 +413,7 @@
 				0DAF480D2650FA8000F3184F /* PlaylistDetailsResponse.swift in Sources */,
 				0D4ED6BC263C5F5D0018403B /* AuthResponse.swift in Sources */,
 				0D10BEDB263D530A009EF62C /* NewReleasesResponse.swift in Sources */,
+				0DAF4817265124D200F3184F /* TitleHeaderCollectionReusableView.swift in Sources */,
 				0D10BEE8263DE09B009EF62C /* RecommendationsResponse.swift in Sources */,
 				0D6C609D263BE37F00A9090E /* AudioTrack.swift in Sources */,
 				0D6C6079263BE27A00A9090E /* AuthViewController.swift in Sources */,
