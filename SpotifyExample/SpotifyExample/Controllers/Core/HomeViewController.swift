@@ -9,8 +9,8 @@ import UIKit
 
 enum BrowseSectionType {
     case newRelease(viewModels: [NewReleasesCellViewModel]) // 0
-    case featuredPlaylist(viewModels: [NewReleasesCellViewModel]) // 1
-    case recommendedTrack(viewModels: [NewReleasesCellViewModel]) // 2
+    case featuredPlaylist(viewModels: [FeaturedPlaylistCellViewModel]) // 1
+    case recommendedTrack(viewModels: [RecommendedTrackCellViewModel]) // 2
 }
 
 class HomeViewController: UIViewController {
@@ -30,6 +30,9 @@ class HomeViewController: UIViewController {
     }()
     
     private var sections = [BrowseSectionType]()
+    private var albums: [Album] = []
+    private var playlists: [Playlist] = []
+    private var tracks: [AudioTrack] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -157,6 +160,11 @@ class HomeViewController: UIViewController {
         playlists: [Playlist],
         tracks: [AudioTrack]
     ) {
+        
+        self.albums = albums
+        self.playlists = playlists
+        self.tracks = tracks
+        
         sections.append(.newRelease(viewModels: albums.compactMap {
             return NewReleasesCellViewModel(
                 name: $0.name,
@@ -165,8 +173,20 @@ class HomeViewController: UIViewController {
                 numOfTracks: $0.total_tracks
             )
         }))
-        sections.append(.featuredPlaylist(viewModels: []))
-        sections.append(.recommendedTrack(viewModels: []))
+        sections.append(.featuredPlaylist(viewModels: playlists.compactMap {
+            return FeaturedPlaylistCellViewModel(
+                name: $0.name,
+                artworkURL: URL(string: $0.images?.first?.url ?? ""),
+                creatorName: $0.owner?.display_name
+            )
+        }))
+        sections.append(.recommendedTrack(viewModels: tracks.compactMap {
+            return RecommendedTrackCellViewModel(
+                name: $0.name,
+                artistName: $0.artists?.first?.name,
+                artworkURL: URL(string: $0.album?.images?.first?.url ?? "")
+            )
+        }))
         collectionView.reloadData()
     }
 
@@ -207,15 +227,36 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FeaturedPlaylistCollectionViewCell.identifier, for: indexPath) as? FeaturedPlaylistCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            cell.backgroundColor = .systemPink
+            let vm = vms[indexPath.row]
+            cell.configure(with: vm)
             return cell
             
         case .recommendedTrack(let vms):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecommendedTrackCollectionViewCell.identifier, for: indexPath) as? RecommendedTrackCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            cell.backgroundColor = .systemTeal
+            let vm = vms[indexPath.row]
+            cell.configure(with: vm)
             return cell
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let section = sections[indexPath.section]
+        switch section {
+        case .newRelease:
+            let album = albums[indexPath.row]
+            let vc = AlbumViewController(album: album)
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+        case .featuredPlaylist:
+            let playlist = playlists[indexPath.row]
+            let vc = PlaylistViewController(playlist: playlist)
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+        case .recommendedTrack:
+            break
         }
     }
     

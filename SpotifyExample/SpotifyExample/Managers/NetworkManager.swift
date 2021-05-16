@@ -11,10 +11,16 @@ struct URLConstants {
     static let base = "https://api.spotify.com/v1"
     static let profileUrl = base + "/me"
     static let newReleasesUrl = base + "/browse/new-releases?limit=50"
-    static let featuredPlaylist = base + "/browse/featured-playlists?limit=1"
+    static let featuredPlaylist = base + "/browse/featured-playlists?limit=20"
     static let recommendedGenres = base + "/recommendations/available-genre-seeds"
     static func recommendations(seeds: String) -> String {
         return base + "/recommendations?limit=40&seed_genres=\(seeds)"
+    }
+    static func albumDetails(id: String) -> String {
+        return base + "/albums/\(id)"
+    }
+    static func playlistDetails(id: String) -> String {
+        return base + "/playlists/\(id)"
     }
 }
 
@@ -28,6 +34,48 @@ final class NetworkManager {
     public static let shared = NetworkManager()
     
     private init() { }
+    
+    //MARK: - Album
+    
+    public func getAlbumDetails(for album: Album, completionHandler: @escaping (Result<AlbumDetailsResponse, Error>) -> Void) {
+        createRequest(with: URL(string: URLConstants.albumDetails(id: album.id ?? "")), type: .GET) { (baseRequest) in
+            let task = URLSession.shared.dataTask(with: baseRequest) { (data, _, error) in
+                guard let data = data, error == nil else {
+                    completionHandler(.failure(NetworkError.failedToGetData))
+                    return
+                }
+                do {
+                    let model = try JSONDecoder().decode(AlbumDetailsResponse.self, from: data)
+                    completionHandler(.success(model))
+                } catch {
+                    completionHandler(.failure(NetworkError.failedToParseData))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    //MARK: - Playlist
+    
+    public func getPlaylistDetails(for playlist: Playlist, completionHandler: @escaping (Result<PlaylistDetailsResponse, Error>) -> Void) {
+        createRequest(with: URL(string: URLConstants.playlistDetails(id: playlist.id ?? "")), type: .GET) { (baseRequest) in
+            let task = URLSession.shared.dataTask(with: baseRequest) { (data, _, error) in
+                guard let data = data, error == nil else {
+                    completionHandler(.failure(NetworkError.failedToGetData))
+                    return
+                }
+                do {
+                    let model = try JSONDecoder().decode(PlaylistDetailsResponse.self, from: data)
+                    completionHandler(.success(model))
+                } catch {
+                    completionHandler(.failure(NetworkError.failedToParseData))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    //MARK: - Profile
     
     public func getCurrentUserProfile(completionHandler: @escaping (Result<UserProfile, Error>) -> Void) {
         createRequest(with: URL(string: URLConstants.profileUrl), type: .GET) { (baseRequest) in
@@ -46,6 +94,8 @@ final class NetworkManager {
             task.resume()
         }
     }
+    
+    //MARK: - Browse
     
     public func getNewReleases(completionHandler: @escaping (Result<NewReleasesResponse, Error>) -> Void) {
         createRequest(with: URL(string: URLConstants.newReleasesUrl), type: .GET) { (baseRequest) in
