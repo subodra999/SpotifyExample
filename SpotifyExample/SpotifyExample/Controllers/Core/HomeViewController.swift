@@ -30,6 +30,9 @@ class HomeViewController: UIViewController {
     }()
     
     private var sections = [BrowseSectionType]()
+    private var albums: [Album] = []
+    private var playlists: [Playlist] = []
+    private var tracks: [AudioTrack] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -157,6 +160,11 @@ class HomeViewController: UIViewController {
         playlists: [Playlist],
         tracks: [AudioTrack]
     ) {
+        
+        self.albums = albums
+        self.playlists = playlists
+        self.tracks = tracks
+        
         sections.append(.newRelease(viewModels: albums.compactMap {
             return NewReleasesCellViewModel(
                 name: $0.name,
@@ -230,6 +238,25 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             let vm = vms[indexPath.row]
             cell.configure(with: vm)
             return cell
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let section = sections[indexPath.section]
+        switch section {
+        case .newRelease:
+            let album = albums[indexPath.row]
+            let vc = AlbumViewController(album: album)
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+        case .featuredPlaylist:
+            let playlist = playlists[indexPath.row]
+            let vc = PlaylistViewController(playlist: playlist)
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+        case .recommendedTrack:
+            break
         }
     }
     
