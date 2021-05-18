@@ -22,6 +22,10 @@ struct URLConstants {
     static func playlistDetails(id: String) -> String {
         return base + "/playlists/\(id)"
     }
+    static let categories = base + "/browse/categories"
+    static func categoryPlaylist(id: String) -> String {
+        return base + "/browse/categories/\(id)/playlists"
+    }
 }
 
 enum NetworkError: Error {
@@ -162,6 +166,44 @@ final class NetworkManager {
                 do {
                     let model = try JSONDecoder().decode(RecommendationsResponse.self, from: data)
                     completionHandler(.success(model))
+                } catch {
+                    completionHandler(.failure(NetworkError.failedToParseData))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    //MARK:- Category
+    
+    public func getCategories(completionHandler: @escaping (Result<[Category], Error>) -> Void) {
+        createRequest(with: URL(string: URLConstants.categories), type: .GET) { (baseRequest) in
+            let task = URLSession.shared.dataTask(with: baseRequest) { (data, _, error) in
+                guard let data = data, error == nil else {
+                    completionHandler(.failure(NetworkError.failedToGetData))
+                    return
+                }
+                do {
+                    let model = try JSONDecoder().decode(AllCategoriesResponse.self, from: data)
+                    completionHandler(.success(model.categories?.items ?? []))
+                } catch {
+                    completionHandler(.failure(NetworkError.failedToParseData))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    public func getCategoryPlaylists(category: Category, completionHandler: @escaping (Result<[Playlist], Error>) -> Void) {
+        createRequest(with: URL(string: URLConstants.categoryPlaylist(id: category.id ?? "")), type: .GET) { (baseRequest) in
+            let task = URLSession.shared.dataTask(with: baseRequest) { (data, _, error) in
+                guard let data = data, error == nil else {
+                    completionHandler(.failure(NetworkError.failedToGetData))
+                    return
+                }
+                do {
+                    let model = try JSONDecoder().decode(FeaturedPlaylistsResponse.self, from: data)
+                    completionHandler(.success(model.playlists?.items ?? []))
                 } catch {
                     completionHandler(.failure(NetworkError.failedToParseData))
                 }
