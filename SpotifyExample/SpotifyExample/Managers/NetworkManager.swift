@@ -26,6 +26,9 @@ struct URLConstants {
     static func categoryPlaylist(id: String) -> String {
         return base + "/browse/categories/\(id)/playlists"
     }
+    static func searchQuery(with query: String) -> String {
+        return base + "/search?limit=20&type=album,artist,track,playlist&q=\(query)"
+    }
 }
 
 enum NetworkError: Error {
@@ -204,6 +207,33 @@ final class NetworkManager {
                 do {
                     let model = try JSONDecoder().decode(FeaturedPlaylistsResponse.self, from: data)
                     completionHandler(.success(model.playlists?.items ?? []))
+                } catch {
+                    completionHandler(.failure(NetworkError.failedToParseData))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    //MARK:- Search
+    
+    public func search(with query: String, completionHandler: @escaping (Result<[SearchResult], Error>) -> Void) {
+        createRequest(with: URL(string: URLConstants.searchQuery(with: query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")), type: .GET) { (baseRequest) in
+            let task = URLSession.shared.dataTask(with: baseRequest) { (data, _, error) in
+                guard let data = data, error == nil else {
+                    completionHandler(.failure(NetworkError.failedToGetData))
+                    return
+                }
+                do {
+                    let model = try JSONDecoder().decode(SearchResultsResponse.self, from: data)
+                    
+                    var searchResults: [SearchResult] = []
+                    searchResults.append(contentsOf: model.albums?.items?.compactMap { SearchResult.album(model: $0) } ?? [])
+                    searchResults.append(contentsOf: model.tracks?.items?.compactMap { SearchResult.track(model: $0) } ?? [])
+                    searchResults.append(contentsOf: model.artists?.items?.compactMap { SearchResult.artist(model: $0) } ?? [])
+                    searchResults.append(contentsOf: model.playlists?.items?.compactMap { SearchResult.playlist(model: $0) } ?? [])
+                    
+                    completionHandler(.success(searchResults))
                 } catch {
                     completionHandler(.failure(NetworkError.failedToParseData))
                 }
