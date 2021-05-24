@@ -83,7 +83,7 @@ class SearchViewController: UIViewController, UISearchResultsUpdating, UISearchB
         }
         resultVC.delegate = self
         NetworkManager.shared.search(with: query) { result in
-            DispatchQueue.main.async { [weak self] in
+            DispatchQueue.main.async {
                 switch result {
                 case .success(let searchResults):
                     resultVC.update(with: searchResults)
@@ -116,7 +116,7 @@ class SearchViewController: UIViewController, UISearchResultsUpdating, UISearchB
             let vc = SFSafariViewController(url: url)
             present(vc, animated: true, completion: nil)
         case .track(let model):
-            break
+            PlaybackPresenter.startPlayback(from: self, track: model)
         case .playlist(let model):
             let vc = PlaylistViewController(playlist: model)
             vc.navigationItem.largeTitleDisplayMode = .never

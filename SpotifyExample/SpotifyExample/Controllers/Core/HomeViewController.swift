@@ -272,7 +272,8 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             vc.navigationItem.largeTitleDisplayMode = .never
             navigationController?.pushViewController(vc, animated: true)
         case .recommendedTrack:
-            break
+            let track = tracks[indexPath.row]
+            PlaybackPresenter.startPlayback(from: self, track: track)
         }
     }
     
