@@ -29,6 +29,11 @@ struct URLConstants {
     static func searchQuery(with query: String) -> String {
         return base + "/search?limit=20&type=album,artist,track,playlist&q=\(query)"
     }
+    static let userPlaylists = URLConstants.base + "/me/playlists/?limit=50"
+    static func createPlaylist(with id: String) -> String {
+        return base + "/users/\(id)/playlists"
+    }
+    
 }
 
 enum NetworkError: Error {
@@ -240,6 +245,65 @@ final class NetworkManager {
             }
             task.resume()
         }
+    }
+    
+    //MARK:- Library
+    
+    public func getCurrentUserPlaylists(completionHandler: @escaping (Result<[Playlist], Error>) -> Void) {
+        createRequest(with: URL(string: URLConstants.userPlaylists), type: .GET) { (baseRequest) in
+            let task = URLSession.shared.dataTask(with: baseRequest) { (data, _, error) in
+                guard let data = data, error == nil else {
+                    completionHandler(.failure(NetworkError.failedToGetData))
+                    return
+                }
+                do {
+                    let model = try JSONDecoder().decode(PlaylistsResponse.self, from: data)
+                    completionHandler(.success(model.items ?? []))
+                } catch {
+                    completionHandler(.failure(NetworkError.failedToParseData))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    public func createPlaylist(with name: String, completionHandler: @escaping (Bool) -> Void) {
+        getCurrentUserProfile { [weak self] result in
+            switch result {
+            case .success(let profile):
+                self?.createRequest(with: URL(string: URLConstants.createPlaylist(with: profile.id ?? "")), type: .POST, completion: { baseRequest in
+                    var request = baseRequest
+                    let json = [
+                        "name": name
+                    ]
+                    request.httpBody = try? JSONSerialization.data(withJSONObject: json, options: .fragmentsAllowed)
+                    let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
+                        guard let data = data, error == nil else {
+                            completionHandler(false)
+                            return
+                        }
+                        do {
+                            let model = try JSONDecoder().decode(Playlist.self, from: data)
+                            print("created: \(model)")
+                            completionHandler(true)
+                        } catch {
+                            completionHandler(false)
+                        }
+                    }
+                    task.resume()
+                })
+            case .failure(_):
+                completionHandler(false)
+            }
+        }
+    }
+    
+    public func addTrackToPlaylist(track: AudioTrack, playlist: Playlist, completionHandler: @escaping (Bool) -> Void) {
+        
+    }
+    
+    public func removeTrackFromPlaylist(track: AudioTrack, playlist: Playlist, completionHandler: @escaping (Bool) -> Void) {
+        
     }
     
     //MARK:- Private
