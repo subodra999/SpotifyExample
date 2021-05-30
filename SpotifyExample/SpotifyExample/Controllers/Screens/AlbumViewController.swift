@@ -76,7 +76,27 @@ class AlbumViewController: UIViewController {
         collectionView.backgroundColor = .systemBackground
         collectionView.delegate = self
         collectionView.dataSource = self
-        
+        fetchData()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapAction))
+    }
+    
+    @objc func didTapAction() {
+        let actionSheet = UIAlertController(title: album.name, message: "Actions", preferredStyle: .actionSheet)
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        actionSheet.addAction(UIAlertAction(title: "Save Album", style: .default, handler: { [weak self] _ in
+            guard let strongSelf = self else { return }
+            NetworkManager.shared.saveAlbum(album: strongSelf.album) { success in
+                if success {
+                    NotificationCenter.default.post(name: .albumSavedNotificaton, object: nil)
+                } else {
+                    print("Failed to save album!")
+                }
+            }
+        }))
+        present(actionSheet, animated: true, completion: nil)
+    }
+    
+    private func fetchData() {
         NetworkManager.shared.getAlbumDetails(for: album) { [weak self] (result) in
             DispatchQueue.main.async {
                 switch result {

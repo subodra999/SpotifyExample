@@ -29,7 +29,7 @@ struct URLConstants {
     static func searchQuery(with query: String) -> String {
         return base + "/search?limit=20&type=album,artist,track,playlist&q=\(query)"
     }
-    static let userPlaylists = URLConstants.base + "/me/playlists/?limit=50"
+    static let userPlaylists = base + "/me/playlists/?limit=50"
     static func createPlaylist(with id: String) -> String {
         return base + "/users/\(id)/playlists"
     }
@@ -38,6 +38,10 @@ struct URLConstants {
     }
     static func removeTrackFromPlaylist(id: String) -> String {
         return base + "/playlists/\(id)/tracks"
+    }
+    static let userAlbums = base + "/me/albums"
+    static func saveAlbum(id: String) -> String {
+        return base + "/me/albums/?ids=\(id)"
     }
 }
 
@@ -365,11 +369,45 @@ final class NetworkManager {
         }
     }
     
+    public func getCurrentUserAlbums(completionHandler: @escaping (Result<[Album], Error>) -> Void) {
+        createRequest(with: URL(string: URLConstants.userAlbums), type: .GET) { (baseRequest) in
+            let task = URLSession.shared.dataTask(with: baseRequest) { (data, _, error) in
+                guard let data = data, error == nil else {
+                    completionHandler(.failure(NetworkError.failedToGetData))
+                    return
+                }
+                do {
+                    let model = try JSONDecoder().decode(LibraryAlbumsResponse.self, from: data)
+                    completionHandler(.success(model.items?.compactMap { $0.album } ?? []))
+                } catch {
+                    completionHandler(.failure(NetworkError.failedToParseData))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    public func saveAlbum(album: Album, completionHandler: @escaping (Bool) -> Void) {
+        createRequest(with: URL(string: URLConstants.saveAlbum(id: album.id ?? "")), type: .PUT) { (baseRequest) in
+            var request = baseRequest
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            let task = URLSession.shared.dataTask(with: baseRequest) { (_, response, error) in
+                guard let code = (response as? HTTPURLResponse)?.statusCode, error == nil else {
+                    completionHandler(false)
+                    return
+                }
+                completionHandler(code == 200 || code == 201)
+            }
+            task.resume()
+        }
+    }
+    
     //MARK:- Private
     enum HTTPMethod: String {
         case GET
         case POST
         case DELETE
+        case PUT
     }
     
     private func createRequest(

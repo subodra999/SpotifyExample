@@ -61,3 +61,7 @@ extension String {
     }
     
 }
+
+extension Notification.Name {
+    static let albumSavedNotificaton = Notification.Name("albumSavedNotificaton")
+}
