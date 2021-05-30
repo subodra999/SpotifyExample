@@ -87,8 +87,10 @@ class AlbumViewController: UIViewController {
             guard let strongSelf = self else { return }
             NetworkManager.shared.saveAlbum(album: strongSelf.album) { success in
                 if success {
+                    HapticsManager.shared.vibrate(for: .success)
                     NotificationCenter.default.post(name: .albumSavedNotificaton, object: nil)
                 } else {
+                    HapticsManager.shared.vibrate(for: .error)
                     print("Failed to save album!")
                 }
             }
