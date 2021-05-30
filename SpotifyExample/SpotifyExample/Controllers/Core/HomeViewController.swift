@@ -60,6 +60,7 @@ class HomeViewController: UIViewController {
         configureCollectionView()
         view.addSubview(spinner)
         fetchData()
+        addLongTapGesture()
     }
     
     private func configureCollectionView() {
@@ -87,6 +88,44 @@ class HomeViewController: UIViewController {
         let vc = SettingsViewController()
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    private func addLongTapGesture() {
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
+        collectionView.addGestureRecognizer(gesture)
+    }
+    
+    @objc private func didLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else {
+            return
+        }
+        
+        let touchPoint = gesture.location(in: collectionView)
+        guard let indexPath = collectionView.indexPathForItem(at: touchPoint), indexPath.section == 2 else {
+            return
+        }
+        
+        let track = tracks[indexPath.row]
+        let actionSheet = UIAlertController(
+            title: track.name,
+            message: "Would you like to add this to a playlist?",
+            preferredStyle: .actionSheet
+        )
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        actionSheet.addAction(UIAlertAction(title: "Add to playlist", style: .default, handler: { [weak self] _ in
+            DispatchQueue.main.async {
+                let vc = LibraryPlaylistsViewController()
+                vc.selectionHandler = { playlist in
+                    NetworkManager.shared.addTrackToPlaylist(track: track, playlist: playlist) { (success) in
+                        print("Hola, track got added to playlist \(playlist.name ?? "-")")
+                    }
+                }
+                vc.title = "Select Playlist"
+                let navVc = UINavigationController(rootViewController: vc)
+                self?.present(navVc, animated: true, completion: nil)
+            }
+        }))
+        present(actionSheet, animated: true, completion: nil)
     }
     
     private func fetchData() {
@@ -259,6 +298,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
+        HapticsManager.shared.vibrateForSelection()
         let section = sections[indexPath.section]
         switch section {
         case .newRelease:
@@ -273,7 +313,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             navigationController?.pushViewController(vc, animated: true)
         case .recommendedTrack:
             let track = tracks[indexPath.row]
-            PlaybackPresenter.startPlayback(from: self, track: track)
+            PlaybackPresenter.shared.startPlayback(from: self, track: track)
         }
     }
     

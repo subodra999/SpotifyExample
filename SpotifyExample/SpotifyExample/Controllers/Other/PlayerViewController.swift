@@ -6,6 +6,14 @@
 //
 
 import UIKit
+import SDWebImage
+
+protocol PlayerViewControllerDelegate: AnyObject {
+    func didTapPlayPause()
+    func didTapForward()
+    func didTapBackward()
+    func didSlideSlider(_ value: Float)
+}
 
 class PlayerViewController: UIViewController {
 
@@ -17,6 +25,10 @@ class PlayerViewController: UIViewController {
     }()
     
     private let controlsView = PlayerControlsView()
+
+    
+    weak var dataSource: PlayerDataSource?
+    weak var delegate: PlayerViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +37,17 @@ class PlayerViewController: UIViewController {
         view.addSubview(controlsView)
         controlsView.delegate = self
         configureBarButtons()
+        configure()
+    }
+    
+    func configure() {
+        imageView.sd_setImage(with: dataSource?.imageURL, completed: nil)
+        controlsView.configure(
+            with: PlayerControlsViewModel(
+                name: dataSource?.songName,
+                subtitle: dataSource?.subtitle
+            )
+        )
     }
     
     override func viewDidLayoutSubviews() {
@@ -55,20 +78,28 @@ class PlayerViewController: UIViewController {
     @objc private func didTapAction() {
         
     }
+    
+    func refreshUI() {
+        configure()
+    }
 }
 
 extension PlayerViewController: PlayerControlsViewDelegate {
     
+    func playerControlsView(_ playerControlsView: PlayerControlsView, didSlideSlider value: Float) {
+        delegate?.didSlideSlider(value)
+    }
+    
     func playerControlsViewDidTapPlayPauseButton(_ playerControlsView: PlayerControlsView) {
-        
+        delegate?.didTapPlayPause()
     }
     
     func playerControlsViewDidTapForwardButton(_ playerControlsView: PlayerControlsView) {
-        
+        delegate?.didTapForward()
     }
     
     func playerControlsViewDidTapBackwardButton(_ playerControlsView: PlayerControlsView) {
-        
+        delegate?.didTapBackward()
     }
     
 }
